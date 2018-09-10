@@ -278,148 +278,162 @@ const Lend_contract_address = '0xebbdff6117674fe1ea7e0726fbbe8738810a37e0'
 const fromAccount = '0xb9695e0DfcccfF1502eb6252FB45Fc7De92220af'
 
 const LendContract = new web3.eth.Contract(
-	  LenderABI, 
-	  Lend_contract_address, {
-	    from: fromAccount,
-	    gasPrice: '20000000000' // default gas price in wei, 20 gwei in this case
-	});
+    LenderABI, 
+    Lend_contract_address, {
+      from: fromAccount,
+      gasPrice: '20000000000' // default gas price in wei, 20 gwei in this case
+  });
 
 LendContract.options.data = LendBytecode;
 
 router.post('/',(req,res) => {
-	res.send({success: true})
+  res.send({success: true})
 });
 
 router.post('/createAccount' , (req,res) => {
-	
-	// web3.eth.accounts.create().then(function(data){
-	// 	console.log(data);
-	// 	res.send({success: true})	
-	// });
+  
+  // web3.eth.accounts.create().then(function(data){
+  //  console.log(data);
+  //  res.send({success: true}) 
+  // });
 
-	//web3.eth.accounts.privateKeyToAccount('2ed1974a7707dd9951e5986f0c3c2bcc6399f6a9da59498a5839f4974bfe07f7')
-	// .then(function(data){
-	// 	console.log(data);
-	// 	web3.eth.accounts.signTransaction(tx, privateKey [, callback]);
-	// 	res.send({success: true})
-	// })
+  //web3.eth.accounts.privateKeyToAccount('2ed1974a7707dd9951e5986f0c3c2bcc6399f6a9da59498a5839f4974bfe07f7')
+  // .then(function(data){
+  //  console.log(data);
+  //  web3.eth.accounts.signTransaction(tx, privateKey [, callback]);
+  //  res.send({success: true})
+  // })
 
-	res.send({success: true})
-	
+  res.send({success: true})
+  
 })
 
 router.post('/getLender',(req,res) => {
 
-	LendContract.methods.getLender(req.body.id).call({from: fromAccount})
-		.then(function(receipt){
-			res.send({success: true})
-			 console.log(receipt);
-		}).catch(function(err){
-			console.log(err)
-			res.send({success: false})
-		});
+  LendContract.methods.getLender(req.body.id).call({from: fromAccount})
+    .then(function(receipt){
+      res.send({success: true})
+       console.log(receipt);
+    }).catch(function(err){
+      console.log(err)
+      res.send({success: false})
+    });
 
 });
 
 router.post('/getBorrower',(req,res) => {
 
-	LendContract.methods.getBorrower(req.body.id).call({from: fromAccount})
-		.then(function(receipt){
-			res.send({success: true})
-			 console.log(receipt);
-		}).catch(function(err){
-			console.log(err)
-			res.send({success: false})
-		});
+  LendContract.methods.getBorrower(req.body.id).call({from: fromAccount})
+    .then(function(receipt){
+      res.send({success: true})
+       console.log(receipt);
+    }).catch(function(err){
+      console.log(err)
+      res.send({success: false})
+    });
 
 });
 
 
 router.post('/createBorrower',(req,res) => {
 
-	LendContract.methods.createBorrower(req.body.name,req.body.startupname,req.body.startupidea,req.body.linkedInURL)
-		.send({from: fromAccount,gasPrice: '20000000000',gas: 1500000})
-			.then(function(receipt){
-    			console.log(receipt);
-    			res.send({success: true})
-			}).catch(function(err) {
-				res.send({success: false})
-			});
-	
+  LendContract.methods.createBorrower(req.body.name,req.body.startupname,req.body.startupidea,req.body.linkedInURL)
+    .send({from: fromAccount,gasPrice: '20000000000',gas: 1500000})
+      .then(function(receipt){
+          console.log(receipt);
+          res.send({success: true})
+      }).catch(function(err) {
+        res.send({success: false})
+      });
+  
 });
+
+router.post('/createLender',(req,res) => {
+
+  LendContract.methods.createLender(req.body.name,fromAccount,req.body.linkedInURL)
+    .send({from: fromAccount,gasPrice: '20000000000',gas: 1500000})
+      .then(function(receipt){
+          console.log(receipt);
+          res.send({success: true})
+      }).catch(function(err) {
+        res.send({success: false})
+      });
+  
+});
+
 
 router.post('/events',(req,res) => {
 
-	//LendContract.once('BorrowerFormed', {
-	//}, function(error, event){ 
-	//	console.log(event); 
-		res.send({success: true})
-	//});
+  //LendContract.once('BorrowerFormed', {
+  //}, function(error, event){ 
+  //  console.log(event); 
+    res.send({success: true})
+  //});
 
 })
 
 router.post('/getAddress' , (req,res) => {
-	
-	LendContract.deploy({})
-		.send({
-		    from: fromAccount,
-		    gas: 1500000,
-		    gasPrice: '20000000000'
-		})
-		.then(function(newContractInstance){
-		    console.log(newContractInstance.options.address) // instance with the new contract address
-		    res.send({success: true})
-		});
+  
+  LendContract.deploy({})
+    .send({
+        from: fromAccount,
+        gas: 1500000,
+        gasPrice: '20000000000'
+    })
+    .then(function(newContractInstance){
+        console.log(newContractInstance.options.address) // instance with the new contract address
+        res.send({success: true})
+    });
 
 });
 
 router.post('/checkGas', (req, res) => {
 
-	LendContract.deploy({
-	    arguments: [123, 'My String']
-	})
-	.estimateGas(function(err, gas){
-	    console.log(gas);
-	    res.send({success: true})
-	});
+  LendContract.deploy({
+      arguments: [123, 'My String']
+  })
+  .estimateGas(function(err, gas){
+      console.log(gas);
+      res.send({success: true})
+  });
 
 });
 
 router.post('*',(req,res) => {
-	res.send({success: false,message: 'Does not exist'})
+  res.status(403).send({success: false,message: 'Does not exist'})
 });
 
 router.delete('*',(req,res) => {
-	res.send({success: false,message: 'Does not exist'})
+  res.status(403).send({success: false,message: 'Does not exist'})
 });
 
 router.put('*',(req,res) => {
-	res.send({success: false,message: 'Does not exist'})
+  res.status(403).send({success: false,message: 'Does not exist'})
 });
 
 router.get('*',(req,res) => {
-	res.send({success: false,message: 'Does not exist'})
+  res.status(403).send({success: false,message: 'Does not exist'})
 });
 
 module.exports = router;
 
 // web3.eth.sendTransaction({from: '0x4402D175A3B8510400F88394D8423381d98D701C', data: '0xb9695e0DfcccfF1502eb6252FB45Fc7De92220af'})
-	// 	.once('transactionHash', function(hash){ console.log(hash) })
-	// 	.once('receipt', function(receipt){ console.log(receipt) })
-	// 	.on('confirmation', function(confNumber, receipt){ console.log(receipt) })
-	// 	.on('error', function(error){ console.log(error) })
-	// 	.then(function(receipt){
-	// 	    console.log(receipt)
-	// });
+  //  .once('transactionHash', function(hash){ console.log(hash) })
+  //  .once('receipt', function(receipt){ console.log(receipt) })
+  //  .on('confirmation', function(confNumber, receipt){ console.log(receipt) })
+  //  .on('error', function(error){ console.log(error) })
+  //  .then(function(receipt){
+  //      console.log(receipt)
+  // });
 
-	//	console.log("Contract: " + JSON.stringify(LendContract.options.address)  /* + JSON.stringify(LendContract.options.jsonInterface)
-	//				 JSON.stringify(LendContract.options.from) */ )
+  //  console.log("Contract: " + JSON.stringify(LendContract.options.address)  /* + JSON.stringify(LendContract.options.jsonInterface)
+  //         JSON.stringify(LendContract.options.from) */ )
 
-		// LendContract.methods.getOrgan(0).call({from: '0xb9695e0DfcccfF1502eb6252FB45Fc7De92220af'})
-		// .then(function(receipt){
-		// 	res.send({success: true})
-		// 	 console.log(receipt);
-		// }).catch(function(err){
-		// 	console.log(err)
-		// 	res.send({success: false})
-		// });
+    // LendContract.methods.getOrgan(0).call({from: '0xb9695e0DfcccfF1502eb6252FB45Fc7De92220af'})
+    // .then(function(receipt){
+    //  res.send({success: true})
+    //   console.log(receipt);
+    // }).catch(function(err){
+    //  console.log(err)
+    //  res.send({success: false})
+    // });
