@@ -24,3 +24,5 @@ module.exports =  {
 	User_Details: User_Details,
 	Meter_Details: Meter_Details
 };
+// 0xb0d64451f5bfb50a3066b15767631654040986c4
+// 0xd3b1a4ba2b6ad8a25418dfda4a238dec1db60b58

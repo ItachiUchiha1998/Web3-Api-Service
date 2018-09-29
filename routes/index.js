@@ -270,7 +270,23 @@ router.post('/buyFrom',(req,res) => { // to edit later
     .send({from: req.body.wallet,gasPrice: '20000000000',gas: 1500000})
       .then(function(receipt){
           console.log(receipt);
-          res.send({success: true})
+
+          db.User_Details.findOne({walletAddress: req.body.wallet }).then(function(data){
+            if(!data) {
+              return res.status(403).send({success: false})
+            }
+            else {
+              data.update({
+                resident_address: req.body.resident_address
+              }).then(function(data){
+                console.log(data)
+                res.send({success: true})
+              })
+            }
+          }).catch(function(err){
+            res.status(403).send({success: false})
+          })
+
       }).catch(function(err) {
         res.send({success: false})
       });
