@@ -46,8 +46,7 @@ web3.eth.getAccounts().then(accounts => {
    
 })
 
-
-const Lend_contract_address = "0x9445d05844efe99a439d9d40d9ea8c91bf1067ed"
+const Lend_contract_address = "0xd3b1a4ba2b6ad8a25418dfda4a238dec1db60b58"
 
 const LendContract = new web3.eth.Contract(
     LenderABI, 
