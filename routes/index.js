@@ -198,7 +198,11 @@ router.post('/seller/read/:id',(req,res) => {
             console.log(a)
             
             db.User_Details.findOne({walletAddress: a.seller}).then(function(data){
-              res.send({walletAddress: data.walletAddress , supply: a.supply ,username:  data.username})
+              if(!data) {
+                res.send({success: false,message: "Wallet Address Does not exists"})
+              }
+              else
+              {res.send({walletAddress: data.walletAddress , supply: a.supply ,username:  data.username})}
             })
     })
 })
@@ -229,8 +233,11 @@ router.post('/buyer/read/:id',(req,res) => {
             console.log(a)
             
             db.User_Details.findOne({walletAddress: a.Buyer}).then(function(data){
-              res.send({walletAddress: data.walletAddress , supply: a.water 
-                        ,username:  data.username, resident_address: data.resident_address})
+              if(!data) {
+                res.send({success: false,message: "Wallet Address Does not exists"})
+              } else{ 
+                            res.send({walletAddress: data.walletAddress , supply: a.water 
+                                      ,username:  data.username, resident_address: data.resident_address})}
             })
 
     })
@@ -258,11 +265,27 @@ router.post('/buyer/read',(req,res) => {
 
 router.post('/buyFrom',(req,res) => { // to edit later
   
-  LendContract.methods.buyFrom(req.body.sellerId,req.body.value)
+  LendContract.methods.buyFrom(req.body.sellerAddress,req.body.value)
     .send({from: req.body.wallet,gasPrice: '20000000000',gas: 1500000})
       .then(function(receipt){
           console.log(receipt);
-          res.send({success: true})
+
+          db.User_Details.findOne({walletAddress: req.body.wallet }).then(function(data){
+            if(!data) {
+              return res.status(403).send({success: false})
+            }
+            else {
+              data.update({
+                resident_address: req.body.resident_address
+              }).then(function(data){
+                console.log(data)
+                res.send({success: true})
+              })
+            }
+          }).catch(function(err){
+            res.status(403).send({success: false})
+          })
+
       }).catch(function(err) {
         res.send({success: false})
       });
