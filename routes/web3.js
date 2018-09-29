@@ -811,3 +811,86 @@ Eth {
      request: [Function: bound ],
      call: 'eth_getLogs' },
   subscribe: [Function] }
+
+  // web3.eth.sendTransaction({from: '0x4402D175A3B8510400F88394D8423381d98D701C', data: '0xb9695e0DfcccfF1502eb6252FB45Fc7De92220af'})
+  //  .once('transactionHash', function(hash){ console.log(hash) })
+  //  .once('receipt', function(receipt){ console.log(receipt) })
+  //  .on('confirmation', function(confNumber, receipt){ console.log(receipt) })
+  //  .on('error', function(error){ console.log(error) })
+  //  .then(function(receipt){
+  //      console.log(receipt)
+  // });
+
+  //  console.log("Contract: " + JSON.stringify(LendContract.options.address)  /* + JSON.stringify(LendContract.options.jsonInterface)
+  //         JSON.stringify(LendContract.options.from) */ )
+
+    // LendContract.methods.getOrgan(0).call({from: '0xb9695e0DfcccfF1502eb6252FB45Fc7De92220af'})
+    // .then(function(receipt){
+    //  res.send({success: true})
+    //   console.log(receipt);
+    // }).catch(function(err){
+    //  console.log(err)
+    //  res.send({success: false})
+    // });
+
+    
+// web3.eth.getAccounts().then(accounts => {
+//   allAccounts = accounts;
+//   Voting.deploy({data: bytecode}).send({
+//     from: accounts[0],
+//     gas: 1500000,
+//     gasPrice: '30000000000000'
+//   }).on('receipt', receipt => {
+//     Voting.options.address = receipt.contractAddress;
+//     Voting.methods.transfer(accounts[1], 10).send({from: accounts[0]}).then(transaction => {
+//       console.log("Transfer lodged. Transaction ID: " + transaction.transactionHash);
+//       let blockHash = transaction.blockHash
+//       return web3.eth.getBlock(blockHash, true);
+//     }).then(block => {
+//       block.transactions.forEach(transaction => {
+//         console.log(abiDecoder.decodeMethod(transaction.input));
+//       });
+//       allAccounts.forEach(account => {
+//           Voting.methods.balances(account).call({from: allAccounts[0]}).then(amount => {
+//             console.log(account + ": " + amount);
+//           });
+//       });
+//     });
+//   });
+// });
+router.post('/events',(req,res) => {
+
+  //LendContract.once('BorrowerFormed', {
+  //}, function(error, event){ 
+  //  console.log(event); 
+    res.send({success: true})
+  //});
+
+})
+
+router.post('/getAddress' , (req,res) => {
+  
+   LendContract.deploy({})
+     .send({
+         from: fromAccount,
+         gas: 1500000,
+         gasPrice: '20000000000'
+     })
+     .then(function(newContractInstance){
+         console.log(newContractInstance.options.address) // instance with the new contract address
+         res.send({success: true})
+     });
+
+});
+
+router.post('/checkGas', (req, res) => {
+
+  // LendContract.deploy({
+  //     arguments: [123, 'My String']
+  // })
+  // .estimateGas(function(err, gas){
+  //     console.log(gas);
+       res.send({success: true})
+  // });
+
+});
