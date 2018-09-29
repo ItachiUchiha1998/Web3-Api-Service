@@ -19,13 +19,13 @@ router.use(function(req, res, next) {
 
 router.use(cors());
 
-const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
 const LendBytecode = require('../../Hydro_Block/build/contracts/Buyer.json')
 const Buyer = LendBytecode.bytecode;
 const LenderABI = LendBytecode.abi;
 
-var fromAccount = web3.eth.accounts[0];
+var fromAccount = "web3.eth.accounts[0]";
 
 web3.eth.getAccounts().then(accounts => {
       
