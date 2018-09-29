@@ -32,7 +32,7 @@ router.use(function(req, res, next) {
 
 router.use(cors());
 
-const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
 const LendBytecode = require('../../Hydro_Block/build/contracts/Buyer.json')
 const Buyer = LendBytecode.bytecode;
@@ -48,7 +48,7 @@ web3.eth.getAccounts().then(accounts => {
 })
 
 
-const Lend_contract_address = "0xd1110d133d5714cc5d89cd0fa314b4ad9fa93918"
+const Lend_contract_address = "0x9445d05844efe99a439d9d40d9ea8c91bf1067ed"
 
 const LendContract = new web3.eth.Contract(
     LenderABI, 
