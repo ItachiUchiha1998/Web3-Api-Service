@@ -25,7 +25,7 @@ const LendBytecode = require('../../Hydro_Block/build/contracts/Buyer.json')
 const Buyer = LendBytecode.bytecode;
 const LenderABI = LendBytecode.abi;
 
-var fromAccount = "web3.eth.accounts[0]";
+var fromAccount = web3.eth.accounts[0];
 
 web3.eth.getAccounts().then(accounts => {
       
