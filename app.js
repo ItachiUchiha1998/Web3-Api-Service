@@ -3,10 +3,16 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 
 var app = express();
+mongoose.connect('mongodb://localhost/HydroBlock',{ useNewUrlParser: true }).then(function(){
+	console.log("Connected to database");
+}).catch(function(err){
+	console.log(err);
+});
 
 app.use(logger('dev'));
 app.use(express.json());
