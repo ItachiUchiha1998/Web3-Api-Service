@@ -2,9 +2,8 @@
 
 MUST:
   1. confirm received
-  2. Host ganache and apis
+  2. Statistics api
   3. dummy meter apis
-  4. Statistics api
 
 LATER: 
   1. Calculate price using game theory in /sell
@@ -92,6 +91,42 @@ router.post('/signup',(req,res) => { // username , walletaddress , meterId , ema
    
    })
 
+})
+
+router.post('/meter/create' , (req,res) => {
+
+  db.Meter_Details.findOne({walletAddress: req.body.wallet}).then(function(data){
+    
+    if(!data) {
+      db.Meter_Details.create({
+        meterId: req.body.meterId,
+        walletAddress: req.body.wallet,
+        water_left: req.body.water_left
+      }).then(function(data){
+        res.send({success: true,meter: data})
+      }).catch(function(err){
+        res.status(403).send({success: false,message: err})
+      })
+    }
+
+    else {
+      data.update({
+        water_left: req.body.water_left
+      }).then(function(data){
+        res.send({success: true,meter: data})
+      }).catch(function(err){
+        res.status(403).send({success: false,message: err})
+      })
+    }
+
+  })
+
+})
+
+router.post('/meter/read' ,(req,res) => {
+  db.Meter_Details.findOne({walletAddress: req.body.wallet}).then(function(data){
+    res.send({success: true,meter: data})
+  })
 })
 
 router.post('/sell',(req,res) => {
@@ -214,6 +249,12 @@ router.post('/getBalance',(req,res) => {
        res.send({success: false})
      });  
 
+})
+
+router.post('/buyer/read',(req,res) => {
+  db.User_Details.findOne({walletAddress: req.body.wallet}).then(function(data){
+    res.send({success: true,buyer: data})
+  })
 })
 
 router.post('/buyFrom',(req,res) => { // to edit later
