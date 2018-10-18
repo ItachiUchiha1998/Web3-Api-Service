@@ -1,15 +1,3 @@
-/*
-
-MUST:
-  1. confirm received
-  2. Statistics api
-  3. dummy meter apis
-
-LATER: 
-  1. Calculate price using game theory in /sell
-
-*/
-
 const express = require('express');
 const router = express.Router();
 const Web3 = require('web3'); 
@@ -46,7 +34,7 @@ web3.eth.getAccounts().then(accounts => {
    
 })
 
-const Lend_contract_address = "0xd3b1a4ba2b6ad8a25418dfda4a238dec1db60b58"
+const Lend_contract_address = "YOUR_CONTRACT_ADDRESS"
 
 const LendContract = new web3.eth.Contract(
     LenderABI, 
@@ -61,11 +49,6 @@ LendContract.options.data = LendBytecode;
 router.post('/',(req,res) => {
   res.send({success: true})
 });
-
-router.post('/test' , (req,res) => {
-  console.log(LendContract)
-  res.send({success: true})
-})
 
 router.post('/signup',(req,res) => { // username , walletaddress , meterId , email
 
@@ -90,42 +73,6 @@ router.post('/signup',(req,res) => { // username , walletaddress , meterId , ema
    
    })
 
-})
-
-router.post('/meter/create' , (req,res) => {
-
-  db.Meter_Details.findOne({walletAddress: req.body.wallet}).then(function(data){
-    
-    if(!data) {
-      db.Meter_Details.create({
-        meterId: req.body.meterId,
-        walletAddress: req.body.wallet,
-        water_left: req.body.water_left
-      }).then(function(data){
-        res.send({success: true,meter: data})
-      }).catch(function(err){
-        res.status(403).send({success: false,message: err})
-      })
-    }
-
-    else {
-      data.update({
-        water_left: req.body.water_left
-      }).then(function(data){
-        res.send({success: true,meter: data})
-      }).catch(function(err){
-        res.status(403).send({success: false,message: err})
-      })
-    }
-
-  })
-
-})
-
-router.post('/meter/read' ,(req,res) => {
-  db.Meter_Details.findOne({walletAddress: req.body.wallet}).then(function(data){
-    res.send({success: true,meter: data})
-  })
 })
 
 router.post('/sell',(req,res) => {
