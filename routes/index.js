@@ -7,21 +7,12 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 router.use(bodyParser.urlencoded({ extended: true }))
-router.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.header('Access-Control-Allow-Origin', 'http://localhost:7545');
-    res.header('Access-Control-Allow-Credentials', true);
-    next();
-});
 
 router.use(cors());
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-const LendBytecode = require('../../Hydro_Block/build/contracts/Buyer.json')
+const LendBytecode = require('PATH_OF_ABI_OF_CONTRACT')
 const Buyer = LendBytecode.bytecode;
 const LenderABI = LendBytecode.abi;
 
