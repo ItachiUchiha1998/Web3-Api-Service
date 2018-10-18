@@ -1,3 +1,4 @@
+// modules
 const express = require('express');
 const router = express.Router();
 const Web3 = require('web3'); 
@@ -6,19 +7,19 @@ const db = require('../model/db');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+//middlewares
 router.use(bodyParser.urlencoded({ extended: true }))
-
 router.use(cors());
+const web3 = new Web3(new Web3.providers.HttpProvider("BLOCKCHAIN_URL"));
 
-const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-
+// fetching abi.json
 const LendBytecode = require('PATH_OF_ABI_OF_CONTRACT')
 const Buyer = LendBytecode.bytecode;
 const LenderABI = LendBytecode.abi;
 
 var fromAccount = web3.eth.accounts[0];
 
-web3.eth.getAccounts().then(accounts => {
+web3.eth.getAccounts().then(accounts => { // get all accounts in blockchain
       
       fromAccount = accounts[0];
       console.log("success")
@@ -27,7 +28,7 @@ web3.eth.getAccounts().then(accounts => {
 
 const Lend_contract_address = "YOUR_CONTRACT_ADDRESS"
 
-const LendContract = new web3.eth.Contract(
+const LendContract = new web3.eth.Contract( // create contract instance
     LenderABI, 
     Lend_contract_address, {
       from: fromAccount,
@@ -35,11 +36,7 @@ const LendContract = new web3.eth.Contract(
       gas: 1891234
   });
 
-LendContract.options.data = LendBytecode;
-
-router.post('/',(req,res) => {
-  res.send({success: true})
-});
+LendContract.options.data = LendBytecode; // set bytecode
 
 router.post('/signup',(req,res) => { // username , walletaddress , meterId , email
 
@@ -66,7 +63,7 @@ router.post('/signup',(req,res) => { // username , walletaddress , meterId , ema
 
 })
 
-router.post('/sell',(req,res) => {
+router.post('/sell',(req,res) => { // create seller
 
   LendContract.methods.createSeller(req.body.supply,req.body.supply*2*10)
     .send({from: req.body.wallet,gasPrice: '20000000000',gas: 1500000})
@@ -80,7 +77,7 @@ router.post('/sell',(req,res) => {
 
 })
 
-router.post('/buy',(req,res) => {    
+router.post('/buy',(req,res) => { // create Buyer    
 
   LendContract.methods.createBuyer()
     .send({from: req.body.wallet,gasPrice: '20000000000',gas: 1500000})
@@ -110,7 +107,7 @@ router.post('/buy',(req,res) => {
 
 })
 
-router.post('/seller/count',(req,res) => { 
+router.post('/seller/count',(req,res) => { // get sellers count
 
   LendContract.methods.get_seller_count().call({from: fromAccount})
     .then(function(receipt){
@@ -125,7 +122,7 @@ router.post('/seller/count',(req,res) => {
 
 })
 
-router.post('/seller/read/:id',(req,res) => {
+router.post('/seller/read/:id',(req,res) => { // read a seller
 
   LendContract.methods.see_single_seller(req.params.id).call({from: fromAccount})
           .then(function(v){
@@ -145,7 +142,7 @@ router.post('/seller/read/:id',(req,res) => {
     })
 })
 
-router.post('/buyer/count',(req,res) => {
+router.post('/buyer/count',(req,res) => { // get buyer count
 
   LendContract.methods.get_buyer_count().call({from: fromAccount})
     .then(function(receipt){
@@ -160,13 +157,13 @@ router.post('/buyer/count',(req,res) => {
 
 })
 
-router.post('/buyer/read/:id',(req,res) => {
+router.post('/buyer/read/:id',(req,res) => { // read buyer
 
   LendContract.methods.see_single_buyer(req.params.id).call({from: fromAccount})
           .then(function(v){
             a = {
               Buyer: v[0],
-              water: v[1]
+              demand: v[1]
             }
             console.log(a)
             
@@ -174,14 +171,14 @@ router.post('/buyer/read/:id',(req,res) => {
               if(!data) {
                 res.send({success: false,message: "Wallet Address Does not exists"})
               } else{ 
-                            res.send({walletAddress: data.walletAddress , supply: a.water 
+                            res.send({walletAddress: data.walletAddress , supply: a.demand 
                                       ,username:  data.username, resident_address: data.resident_address})}
             })
 
     })
 })
 
-router.post('/getBalance',(req,res) => {
+router.post('/getBalance',(req,res) => { // get user balance
 
      LendContract.methods.get_balance().call({from: req.body.wallet})
      .then(function(receipt){
@@ -195,13 +192,7 @@ router.post('/getBalance',(req,res) => {
 
 })
 
-router.post('/buyer/read',(req,res) => {
-  db.User_Details.findOne({walletAddress: req.body.wallet}).then(function(data){
-    res.send({success: true,buyer: data})
-  })
-})
-
-router.post('/buyFrom',(req,res) => { // to edit later
+router.post('/buyFrom',(req,res) => { // asset buy
   
   LendContract.methods.buyFrom(req.body.sellerAddress,req.body.value)
     .send({from: req.body.wallet,gasPrice: '20000000000',gas: 1500000})
@@ -230,7 +221,7 @@ router.post('/buyFrom',(req,res) => { // to edit later
 
 })
 
-router.post('/confirm',(req,res) => { // to do later
+router.post('/confirm',(req,res) => { // confirm transaction
   
   LendContract.methods.confirm_received(req.body.sellerId)
     .send({from: req.body.wallet,gasPrice: '20000000000',gas: 1500000})
